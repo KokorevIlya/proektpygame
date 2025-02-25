@@ -592,7 +592,7 @@ while True:
                 if enemy_cnt == 0:
                     mp[y] = mp[y][:x] + '.' + mp[y][x] + mp[y][x + 2:]
             if direction == 'left':
-                pvp = mp[y][x] + mp[y][x + 1]
+                pvp = mp[y][x] + mp[y][x - 1]
                 if mp[y][x] == 'v':
                     cnt = count_voin
                     hp = hp_voin
