@@ -326,13 +326,13 @@ while True:
                         new_player3 = Cavalry(x, y)
                     elif level[y][x] == 'e':
                         Tile('empty', x, y)
-                        new_enemy1 = enemy_Cavalry(x, y)
+                        new_enemy1 = enemy_Spearman(x, y)
                     elif level[y][x] == 'w':
                         Tile('empty', x, y)
                         new_enemy2 = enemy_Voin(x, y)
                     elif level[y][x] == 'q':
                         Tile('empty', x, y)
-                        new_enemy3 = enemy_Spearman(x, y)
+                        new_enemy3 = enemy_Cavalry(x, y)
             return new_player1, new_player2, new_player3, x, y
 
 
