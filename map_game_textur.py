@@ -3,6 +3,8 @@ import sqlite3
 from random import randint
 import sys
 import os
+import time
+
 
 attak = False
 WIDTH, HEIGHT = 800, 600
@@ -13,8 +15,6 @@ pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Цивилизация на минималках")
 font = pygame.font.Font(None, 24)
-
-
 # База данных
 def initialize_database():
     conn = sqlite3.connect("game_data.db")
@@ -31,7 +31,7 @@ def initialize_database():
 
     cursor.execute("SELECT * FROM resources")
     if cursor.fetchone() is None:
-        cursor.execute("INSERT INTO resources (gold, food, warriors_voin, warriors_spearman, warriors_cavalry) VALUES (20, 10, 0, 0, 0)")
+        cursor.execute("INSERT INTO resources (gold, food, warriors_voin, warriors_spearman, warriors_cavalry, sec) VALUES (20, 10, 0, 0, 0, 0)")
     conn.commit()
     conn.close()
 
@@ -40,21 +40,21 @@ def initialize_database():
 def load_resources():
     conn = sqlite3.connect("game_data.db")
     cursor = conn.cursor()
-    cursor.execute("SELECT gold, food, warriors_voin, warriors_spearman, warriors_cavalry FROM resources WHERE id = 1")
+    cursor.execute("SELECT gold, food, warriors_voin, warriors_spearman, warriors_cavalry, sec FROM resources WHERE id = 1")
     result = cursor.fetchone()
     conn.close()
 
     if result:
-        return result[0], result[1], result[2], result[3], result[4]
-    return 0, 0, 0, 0, 0
+        return result[0], result[1], result[2], result[3], result[4], result[5]
+    return 0, 0, 0, 0, 0, 0
 
 
 # Сохранения данных в базу
 def save_resources():
     conn = sqlite3.connect("game_data.db")
     cursor = conn.cursor()
-    cursor.execute("UPDATE resources SET gold = ?, food = ?, warriors_voin = ?, warriors_spearman = ?, warriors_cavalry = ? WHERE id = 1",
-                   (gold, food, warriors_voin, warriors_spearman, warriors_cavalry))
+    cursor.execute("UPDATE resources SET gold = ?, food = ?, warriors_voin = ?, warriors_spearman = ?, warriors_cavalry = ?, sec = ? WHERE id = 1",
+                   (gold, food, warriors_voin, warriors_spearman, warriors_cavalry, sec))
     conn.commit()
     conn.close()
 
@@ -92,7 +92,7 @@ rows = HEIGHT // TILE_SIZE
 cols = WIDTH // TILE_SIZE
 terrain_map = [["grass" for _ in range(cols)] for _ in range(rows)]
 initialize_database()
-gold, food, warriors_voin, warriors_spearman, warriors_cavalry = load_resources()
+gold, food, warriors_voin, warriors_spearman, warriors_cavalry, sec = load_resources()
 mines = {}
 farms = {}
 barracks = {}
@@ -132,7 +132,7 @@ for i in range(5, 10):
 
 # Панель ресурсов
 def draw_resource_panel():
-    panel_surface = pygame.Surface((200, 120))
+    panel_surface = pygame.Surface((200, 130))
     panel_surface.fill((50, 50, 50))
 
     gold_text = font.render(f"Золото: {gold}", True, TEXT_COLOR)
@@ -140,13 +140,13 @@ def draw_resource_panel():
     warriors_voin_text = font.render(f"Войны: {warriors_voin}", True, TEXT_COLOR)
     warriors_spearman_text = font.render(f"Копейщики: {warriors_spearman}", True, TEXT_COLOR)
     warriors_cavalry_text = font.render(f"Кавалерия: {warriors_cavalry}", True, TEXT_COLOR)
-
+    sec_text = font.render(f"Секунд прошло: {sec}", True, TEXT_COLOR)
     panel_surface.blit(gold_text, (10, 10))
     panel_surface.blit(food_text, (10, 30))
     panel_surface.blit(warriors_voin_text, (10, 50))
     panel_surface.blit(warriors_spearman_text, (10, 70))
     panel_surface.blit(warriors_cavalry_text, (10, 90))
-
+    panel_surface.blit(sec_text, (10, 110))
     screen.blit(panel_surface, (10, 10))
 
 
@@ -191,10 +191,10 @@ def reset_database():
     global gold, food, warriors_voin, warriors_spearman, warriors_cavalry
     conn = sqlite3.connect("game_data.db")
     cursor = conn.cursor()
-    cursor.execute("UPDATE resources SET gold = 20, food = 10 , warriors_voin = 0, warriors_spearman = 0, warriors_cavalry = 0 WHERE id = 1")
+    cursor.execute("UPDATE resources SET gold = 20, food = 10 , warriors_voin = 0, warriors_spearman = 0, warriors_cavalry = 0, sec = 0 WHERE id = 1")
     conn.commit()
     conn.close()
-    gold, food, warriors_voin, warriors_spearman, warriors_cavalry = 20, 10, 0, 0, 0
+    gold, food, warriors_voin, warriors_spearman, warriors_cavalry, sec = 20, 10, 0, 0, 0, 0
 
 
 
@@ -245,7 +245,7 @@ while running:
                         save_resources()
                         farms[(row, col)] = "farm"
                         terrain_map[row][col] = "farm"
-
+    sec += 1
     pygame.time.delay(1000)
 pygame.quit()
 while True:
@@ -820,13 +820,17 @@ while True:
                 warriors_enemy_voin_text = font.render(f"Вражеские Войны: {count_enemy_voin}", True, TEXT_COLOR)
                 warriors_enemy_spearmen_text = font.render(f"Вражеские Копейщики: {count_enemy_spearmen}", True, TEXT_COLOR)
                 warriors_enemy_cavalry_text = font.render(f"Вражеская Кавалерия: {count_enemy_cavalry}", True, TEXT_COLOR)
+                sec_text = font.render(f"Секунд прошло: {sec}", True, TEXT_COLOR)
                 panel_surface.blit(warriors_voin_text, (10, 20))
                 panel_surface.blit(warriors_spearman_text, (10, 40))
                 panel_surface.blit(warriors_cavalry_text, (10, 60))
                 panel_surface.blit(warriors_enemy_voin_text, (250, 20))
                 panel_surface.blit(warriors_enemy_spearmen_text, (250, 40))
-                panel_surface.blit(warriors_enemy_cavalry_text , (250, 60))
+                panel_surface.blit(warriors_enemy_cavalry_text, (250, 60))
+                panel_surface.blit(sec_text, (150, 80))
                 screen.blit(panel_surface, (150, 900))
                 clock.tick(FPS)
                 pygame.display.flip()
+                time.sleep(1)
+                sec += 1
             terminate()
