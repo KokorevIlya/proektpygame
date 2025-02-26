@@ -318,7 +318,7 @@ while True:
             global new_player1
             global new_player2
             global new_player3
-            new_player, x, y = None, None, None
+            new_player1, new_player2, new_player3, x, y = None, None, None, None, None
             for y in range(len(level)):
                 for x in range(len(level[y])):
                     if level[y][x] == '.':
@@ -741,10 +741,26 @@ while True:
             running = True
             all_sprites = pygame.sprite.Group()
             mp = load_level('level.txt')
+            if count_voin == 0:
+                for i in range(len(mp)):
+                    for j in range(len(mp[i])):
+                        if mp[i][j] == 'v':
+                            mp[i] = mp[i][:j] + '.' + mp[i][j + 1:]
+            if count_spearman == 0:
+                for i in range(len(mp)):
+                    for j in range(len(mp[i])):
+                        if mp[i][j] == 's':
+                            mp[i] = mp[i][:j] + '.' + mp[i][j + 1:]
+            if count_cavalry == 0:
+                for i in range(len(mp)):
+                    for j in range(len(mp[i])):
+                        if mp[i][j] == 'c':
+                            mp[i] = mp[i][:j] + '.' + mp[i][j + 1:]
             # создадим спрайт
             start_screen()
-            fighter, spear, cav, level_x, level_y = generate_level(load_level('level.txt'))
-            x, y = fighter.coord()
+            fighter, spear, cav, level_x, level_y = generate_level(mp)
+            if fighter is not None:
+                x, y = fighter.coord()
             choice = False
             unit = fighter
             sprite = pygame.sprite.Sprite()
@@ -767,6 +783,7 @@ while True:
                             if pygame.K_1 == event.key and count_voin != 0:
                                 choice = True
                                 unit = fighter
+                                print(count_voin, count_spearman, count_cavalry, count_enemy_voin, count_enemy_spearmen, count_enemy_cavalry)
                             elif pygame.K_2 == event.key and count_spearman != 0:
                                 choice = True
                                 unit = spear
