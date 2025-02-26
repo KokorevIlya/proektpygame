@@ -206,7 +206,6 @@ while running:
     draw_resource_panel()
     pygame.display.flip()
     generate_resources()
-
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -807,7 +806,27 @@ while True:
                         clock.tick(fps)
                         pygame.display.flip()
                     reset_database()
+                elif count_enemy_voin + count_enemy_spearmen + count_enemy_cavalry == 0:
+                    print('You Win')
                 all_sprites.draw(screen)
+                font = pygame.font.Font(None, 30)
+                panel_surface = pygame.Surface((600, 100))
+                panel_surface.fill((50, 50, 50))
+                gold_text = font.render(f"Золото: {gold}", True, TEXT_COLOR)
+                food_text = font.render(f"Еда: {food}", True, TEXT_COLOR)
+                warriors_voin_text = font.render(f"Ваши Войны: {count_voin}", True, TEXT_COLOR)
+                warriors_spearman_text = font.render(f"Ваши Копейщики: {count_spearman}", True, TEXT_COLOR)
+                warriors_cavalry_text = font.render(f"Ваша Кавалерия: {count_cavalry}", True, TEXT_COLOR)
+                warriors_enemy_voin_text = font.render(f"Вражеские Войны: {count_enemy_voin}", True, TEXT_COLOR)
+                warriors_enemy_spearmen_text = font.render(f"Вражеские Копейщики: {count_enemy_spearmen}", True, TEXT_COLOR)
+                warriors_enemy_cavalry_text = font.render(f"Вражеская Кавалерия: {count_enemy_cavalry}", True, TEXT_COLOR)
+                panel_surface.blit(warriors_voin_text, (10, 20))
+                panel_surface.blit(warriors_spearman_text, (10, 40))
+                panel_surface.blit(warriors_cavalry_text, (10, 60))
+                panel_surface.blit(warriors_enemy_voin_text, (250, 20))
+                panel_surface.blit(warriors_enemy_spearmen_text, (250, 40))
+                panel_surface.blit(warriors_enemy_cavalry_text , (250, 60))
+                screen.blit(panel_surface, (150, 900))
                 clock.tick(FPS)
                 pygame.display.flip()
             terminate()
