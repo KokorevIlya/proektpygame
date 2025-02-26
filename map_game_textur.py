@@ -1,5 +1,4 @@
 import pygame
-import random
 import sqlite3
 from random import randint
 import sys
@@ -97,7 +96,6 @@ gold, food, warriors_voin, warriors_spearman, warriors_cavalry = load_resources(
 mines = {}
 farms = {}
 barracks = {}
-print(terrain_map)
 
 
 # Размещаем два замка
@@ -131,7 +129,7 @@ for i in range(5, 10):
         terrain_map[i][j] = 'castle'
     for j in range(13, 17):
         terrain_map[i][j] = 'castle'
-print(terrain_map)
+
 # Панель ресурсов
 def draw_resource_panel():
     panel_surface = pygame.Surface((200, 120))
@@ -749,7 +747,14 @@ while True:
             x, y = fighter.coord()
             choice = False
             unit = fighter
-            print(count_voin, count_enemy_voin, count_spearman, count_enemy_spearmen, count_cavalry, count_enemy_cavalry)
+            sprite = pygame.sprite.Sprite()
+            sprite.image = load_image("gameover.png")
+            sprite.rect = sprite.image.get_rect()
+            screen2 = pygame.Surface(screen.get_size())
+            fps = 180
+            v = 2000  # пикселей в секунду
+            y1 = 300
+            x1 = -600
             while running:
                 for event in pygame.event.get():
                     if pygame.KEYDOWN == event.type:
@@ -760,8 +765,6 @@ while True:
                             choice = False
                         else:
                             if pygame.K_1 == event.key and count_voin != 0:
-                                print(count_voin, count_enemy_voin, count_spearman, count_enemy_spearmen, count_cavalry,
-                                      count_enemy_cavalry)
                                 choice = True
                                 unit = fighter
                             elif pygame.K_2 == event.key and count_spearman != 0:
@@ -772,7 +775,21 @@ while True:
                                 unit = cav
                     if event.type == pygame.QUIT:
                         running = False
-
+                if count_voin + count_spearman + count_cavalry == 0:
+                    while running:
+                        for event in pygame.event.get():
+                            if event.type == pygame.QUIT:
+                                running = False
+                        screen.blit(screen2, (0, 0))
+                        if x1 < 150:
+                            x1 += v / fps
+                        sprite.rect.x = x1
+                        sprite.rect.y = y1
+                        all_sprites.add(sprite)
+                        all_sprites.draw(screen)
+                        clock.tick(fps)
+                        pygame.display.flip()
+                    reset_database()
                 all_sprites.draw(screen)
                 clock.tick(FPS)
                 pygame.display.flip()
