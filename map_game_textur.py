@@ -32,7 +32,7 @@ def initialize_database():
 
     cursor.execute("SELECT * FROM resources")
     if cursor.fetchone() is None:
-        cursor.execute("INSERT INTO resources (gold, food, warriors_voin, warriors_spearman, warriors_cavalry) VALUES (0, 0, 0, 0, 0)")
+        cursor.execute("INSERT INTO resources (gold, food, warriors_voin, warriors_spearman, warriors_cavalry) VALUES (20, 10, 0, 0, 0)")
     conn.commit()
     conn.close()
 
@@ -88,17 +88,16 @@ CASTLE_PIXEL_SIZE = CASTLE_SIZE * TILE_SIZE
 textures["castle"] = pygame.transform.scale(textures["castle"], (CASTLE_PIXEL_SIZE, CASTLE_PIXEL_SIZE))
 textures["enemy_castle"] = pygame.transform.scale(textures["enemy_castle"], (CASTLE_PIXEL_SIZE, CASTLE_PIXEL_SIZE))
 
-
 # Генерация карты (Заполняется всё поле травой)
 rows = HEIGHT // TILE_SIZE
 cols = WIDTH // TILE_SIZE
 terrain_map = [["grass" for _ in range(cols)] for _ in range(rows)]
 initialize_database()
 gold, food, warriors_voin, warriors_spearman, warriors_cavalry = load_resources()
-enemy_warriors = random.randint(5, 15)
 mines = {}
 farms = {}
 barracks = {}
+print(terrain_map)
 
 
 # Размещаем два замка
@@ -112,7 +111,6 @@ for i in range(-2, 3):
             terrain_map[r1][c1] = "grass"
         if 0 <= r2 < rows and 0 <= c2 < cols:
             terrain_map[r2][c2] = "grass"
-
 
 # Рисуем сетку
 def draw_grid(surface):
@@ -128,8 +126,12 @@ def draw_grid(surface):
 
     screen.blit(textures["castle"], ((player_castle_col - 2) * TILE_SIZE, (player_castle_row - 2) * TILE_SIZE))
     screen.blit(textures["enemy_castle"], ((enemy_castle_col - 2) * TILE_SIZE, (enemy_castle_row - 2) * TILE_SIZE))
-
-
+for i in range(5, 10):
+    for j in range(2, 7):
+        terrain_map[i][j] = 'castle'
+    for j in range(13, 17):
+        terrain_map[i][j] = 'castle'
+print(terrain_map)
 # Панель ресурсов
 def draw_resource_panel():
     panel_surface = pygame.Surface((200, 120))
@@ -184,19 +186,17 @@ def hide_warriors_cavalry():
         food -= 3
         warriors_cavalry += 1
         save_resources()
-def attack_enemy():
-    pass
 
 
 # Сброс базы данных
 def reset_database():
-    global gold, food, warriors
+    global gold, food, warriors_voin, warriors_spearman, warriors_cavalry
     conn = sqlite3.connect("game_data.db")
     cursor = conn.cursor()
-    cursor.execute("UPDATE resources SET gold = 0, food = 0, warriors = 0 WHERE id = 1")
+    cursor.execute("UPDATE resources SET gold = 20, food = 10 , warriors_voin = 0, warriors_spearman = 0, warriors_cavalry = 0 WHERE id = 1")
     conn.commit()
     conn.close()
-    gold, food, warriors = 0, 0, 0
+    gold, food, warriors_voin, warriors_spearman, warriors_cavalry = 20, 10, 0, 0, 0
 
 
 
@@ -233,9 +233,21 @@ while running:
             col = x // TILE_SIZE
             row = y // TILE_SIZE
             if build_mode == "mine":
-                mines[(row, col)] = "mine"
+                if terrain_map[row][col] != "castle" and terrain_map[row][col] != "mine":
+                    if gold >= 5 and food >= 3:
+                        gold -= 5
+                        food -= 3
+                        save_resources()
+                        mines[(row, col)] = "mine"
+                        terrain_map[row][col] = "mine"
             elif build_mode == "farm":
-                farms[(row, col)] = "farm"
+                if terrain_map[row][col] != 'castle' and terrain_map[row][col] != "farm":
+                    if gold >= 5 and food >= 3:
+                        gold -= 5
+                        food -= 3
+                        save_resources()
+                        farms[(row, col)] = "farm"
+                        terrain_map[row][col] = "farm"
 
     pygame.time.delay(1000)
 pygame.quit()
