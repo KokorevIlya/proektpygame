@@ -730,7 +730,7 @@ while True:
             hp_enemy_voin = count_enemy_voin * 10
             hp_enemy_spearman = count_enemy_spearmen * 10
             hp_enemy_cavalry = count_enemy_cavalry * 10
-            FPS = 50
+            FPS = 180
             clock = pygame.time.Clock()
             pygame.init()
             pygame.display.set_caption('Битва')
@@ -766,7 +766,6 @@ while True:
             sprite.image = load_image("gameover.png")
             sprite.rect = sprite.image.get_rect()
             screen2 = pygame.Surface(screen.get_size())
-            fps = 180
             v = 2000  # пикселей в секунду
             y1 = 300
             x1 = -600
@@ -782,7 +781,6 @@ while True:
                             if pygame.K_1 == event.key and count_voin != 0:
                                 choice = True
                                 unit = fighter
-                                print(count_voin, count_spearman, count_cavalry, count_enemy_voin, count_enemy_spearmen, count_enemy_cavalry)
                             elif pygame.K_2 == event.key and count_spearman != 0:
                                 choice = True
                                 unit = spear
@@ -798,16 +796,16 @@ while True:
                                 running = False
                         screen.blit(screen2, (0, 0))
                         if x1 < 150:
-                            x1 += v / fps
+                            x1 += v / FPS
                         sprite.rect.x = x1
                         sprite.rect.y = y1
                         all_sprites.add(sprite)
                         all_sprites.draw(screen)
-                        clock.tick(fps)
+                        clock.tick(FPS)
                         pygame.display.flip()
                     reset_database()
                 elif count_enemy_voin + count_enemy_spearmen + count_enemy_cavalry == 0:
-                    print('You Win')
+                    pass
                 all_sprites.draw(screen)
                 font = pygame.font.Font(None, 30)
                 panel_surface = pygame.Surface((600, 100))
