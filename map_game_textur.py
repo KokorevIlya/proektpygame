@@ -127,7 +127,7 @@ def draw_grid(surface):
 for i in range(5, 10):
     for j in range(2, 7):
         terrain_map[i][j] = 'castle'
-    for j in range(13, 17):
+    for j in range(13, 18):
         terrain_map[i][j] = 'castle'
 
 # Панель ресурсов
