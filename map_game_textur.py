@@ -168,7 +168,7 @@ def hire_warrior_voin():
         save_resources()
 
 
-def hide_warriors_spearman():
+def hire_warriors_spearman():
     global gold, food, warriors_spearman
     if gold >= 5 and food >= 3:
         gold -= 5
@@ -177,7 +177,7 @@ def hide_warriors_spearman():
         save_resources()
 
 
-def hide_warriors_cavalry():
+def hire_warriors_cavalry():
     global gold, food, warriors_cavalry
     if gold >= 5 and food >= 3:
         gold -= 5
@@ -284,12 +284,16 @@ while True:
 
 
         def start_screen():
-            intro_text = ["МАРИО ЖДАЛ ВАС", "",
-                          "Правила игры",
-                          "Ходите стрелками,",
-                          "не бейтесь об стены слишком много раз"]
+            intro_text = ["Правила Боя!!:", "",
+                          "Нажмите 1 чтобы выбрать Воина!",
+                          "Нажмите 2 чтобы выбрать Копейщика!",
+                          "Нажмите 3 чтобы выбрать Кавалерию!",
+                          "Воины бьют больнее копейщиков",
+                          "Копейщики бьют больнее кавалерию",
+                          "Кавалерия бьют больнее воинов",
+                          "Нажмите Пробел чтобы продолжить",]
 
-            fon = pygame.transform.scale(load_image('fon.jpg'), (width, height))
+            fon = pygame.transform.scale(load_image(f'fon{randint(0, 3)}.jpg'), (width, height))
             screen.blit(fon, (0, 0))
             font = pygame.font.Font(None, 30)
             text_coord = 50
@@ -306,9 +310,9 @@ while True:
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         terminate()
-                    elif event.type == pygame.KEYDOWN or \
-                            event.type == pygame.MOUSEBUTTONDOWN:
-                        return  # начинаем игру
+                    elif event.type == pygame.KEYDOWN:
+                        if pygame.K_SPACE == event.key:
+                            return  # начинаем игру
                 pygame.display.flip()
                 clock.tick(FPS)
 
@@ -828,7 +832,7 @@ while True:
                 panel_surface.blit(sec_text, (150, 80))
                 screen.blit(panel_surface, (150, 900))
                 clock.tick(FPS)
-                pygame.display.flip()
+                pygame .display.flip()
                 time.sleep(1)
                 sec += 1
             terminate()
