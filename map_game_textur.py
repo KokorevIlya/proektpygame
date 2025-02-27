@@ -250,6 +250,7 @@ while running:
 pygame.quit()
 
 
+# Загрузка уровня
 def load_level(filename):
     filename = "data/" + filename
     # читаем уровень, убирая символы перевода строки
@@ -263,6 +264,7 @@ def load_level(filename):
     return list(map(lambda x: x.ljust(max_width, '.'), level_map))
 
 
+# Загрузка изображения
 def load_image(name, colorkey=None):
     fullname = os.path.join('data', name)
     # если файл не существует, то выходим
@@ -278,11 +280,13 @@ def load_image(name, colorkey=None):
     return image
 
 
+# Завершение работы программы
 def terminate():
     pygame.quit()
     sys.exit()
 
 
+# Загрузка экрана перед боем
 def start_screen():
     intro_text = ["Правила Боя!!:", "",
                   "Нажмите 1 чтобы выбрать Воина!",
@@ -317,6 +321,7 @@ def start_screen():
         clock.tick(FPS)
 
 
+# Генерация уровня
 def generate_level(level):
     global new_player1
     global new_player2
@@ -349,6 +354,7 @@ def generate_level(level):
     return new_player1, new_player2, new_player3, x, y
 
 
+# Класс
 class Tile(pygame.sprite.Sprite):
     def __init__(self, tile_type, pos_x, pos_y):
         super().__init__(tiles_group, all_sprites)
@@ -357,6 +363,7 @@ class Tile(pygame.sprite.Sprite):
             tile_width * pos_x, tile_height * pos_y)
 
 
+# Спрайт вражеского война
 class enemy_Voin(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y):
         self.x = pos_x
@@ -370,6 +377,7 @@ class enemy_Voin(pygame.sprite.Sprite):
         return self.x, self.y
 
 
+# Спрайт вражеского копейщика
 class enemy_Spearman(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y):
         self.x = pos_x
@@ -383,6 +391,7 @@ class enemy_Spearman(pygame.sprite.Sprite):
         return self.x, self.y
 
 
+# Спрайт вражеской кавалерии
 class enemy_Cavalry(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y):
         self.x = pos_x
@@ -396,6 +405,7 @@ class enemy_Cavalry(pygame.sprite.Sprite):
         return self.x, self.y
 
 
+# Спрайт нашего война
 class Voin(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y):
         self.x = pos_x
@@ -409,6 +419,7 @@ class Voin(pygame.sprite.Sprite):
         return self.x, self.y
 
 
+# Спрайт нашего копейщика
 class Spearman(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y):
         self.x = pos_x
@@ -422,6 +433,7 @@ class Spearman(pygame.sprite.Sprite):
         return self.x, self.y
 
 
+# Спрайт нашей кавалерии
 class Cavalry(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y):
         self.x = pos_x
@@ -435,6 +447,7 @@ class Cavalry(pygame.sprite.Sprite):
         return self.x, self.y
 
 
+# БИТВА
 def fight(unit, direction):
     global mp
     global pvp
@@ -451,6 +464,8 @@ def fight(unit, direction):
     global count_enemy_spearmen
     global count_enemy_cavalry
     x, y = unit.coord()
+
+
     if direction == 'down':
         pvp = mp[y][x] + mp[y + 1][x]
         if mp[y][x] == 'v':
@@ -508,6 +523,8 @@ def fight(unit, direction):
         if enemy_cnt == 0:
             mp[y + 1] = mp[y + 1][:x] + mp[y][x] + mp[y + 1][x + 1:]
             mp[y] = mp[y][:x] + '.' + mp[y][x + 1:]
+
+
     if direction == 'up':
         pvp = mp[y][x] + mp[y - 1][x]
         if mp[y][x] == 'v':
@@ -542,7 +559,6 @@ def fight(unit, direction):
             enemy_hp = 0
         cnt = (hp + 9) // 10
         enemy_cnt = (enemy_hp + 9) // 10
-
         if mp[y][x] == 'v':
             count_voin = cnt
             hp_voin = hp
@@ -566,6 +582,8 @@ def fight(unit, direction):
         if enemy_cnt == 0:
             mp[y - 1] = mp[y - 1][:x] + mp[y][x] + mp[y - 1][x + 1:]
             mp[y] = mp[y][:x] + '.' + mp[y][x + 1:]
+
+
     if direction == 'right':
         pvp = mp[y][x] + mp[y][x + 1]
         if mp[y][x] == 'v':
@@ -622,6 +640,8 @@ def fight(unit, direction):
             mp[y] = mp[y][:x] + '.' + mp[y][x + 1:]
         if enemy_cnt == 0:
             mp[y] = mp[y][:x] + '.' + mp[y][x] + mp[y][x + 2:]
+
+
     if direction == 'left':
         pvp = mp[y][x] + mp[y][x - 1]
         if mp[y][x] == 'v':
@@ -679,7 +699,7 @@ def fight(unit, direction):
         if enemy_cnt == 0:
             mp[y] = mp[y][:x - 1] + '.' + mp[y][x] + mp[y][x + 1:]
 
-
+# движение наших юнитов
 def move(unit):
     global mp
     x, y = unit.coord()
@@ -723,22 +743,22 @@ if __name__ == '__main__':
         'empty': load_image('grass.png')
     }
     voin_image = load_image('voin.png')
-    voin_image = pygame.transform.scale(voin_image, (70, 100))
+    voin_image = pygame.transform.scale(voin_image, (35, 50))
 
     cavalry_image = load_image('cavalry.png')
-    cavalry_image = pygame.transform.scale(cavalry_image, (70, 100))
+    cavalry_image = pygame.transform.scale(cavalry_image, (35, 50))
     spearman_image = load_image('spearman.png')
-    spearman_image = pygame.transform.scale(spearman_image, (70, 100))
+    spearman_image = pygame.transform.scale(spearman_image, (35, 50))
 
     enemy_voin_image = load_image('enemy_voin.png')
-    enemy_voin_image = pygame.transform.scale(enemy_voin_image, (70, 100))
+    enemy_voin_image = pygame.transform.scale(enemy_voin_image, (35, 50))
 
     enemy_cavalry_image = load_image('enemy_cavalry.png')
-    enemy_cavalry_image = pygame.transform.scale(enemy_cavalry_image, (70, 100))
+    enemy_cavalry_image = pygame.transform.scale(enemy_cavalry_image, (35, 50))
     enemy_spearman_image = load_image('enemy_spearman.png')
-    enemy_spearman_image = pygame.transform.scale(enemy_spearman_image, (70, 100))
+    enemy_spearman_image = pygame.transform.scale(enemy_spearman_image, (35, 50))
 
-    tile_width = tile_height = 100
+    tile_width = tile_height = 50
     player = None
 
     all_sprites = pygame.sprite.Group()
@@ -767,7 +787,7 @@ if __name__ == '__main__':
     pygame.init()
     pygame.display.set_caption('Битва')
     pygame.mouse.set_visible(False)
-    size = width, height = 900, 1000
+    size = width, height = 450, 500
     screen = pygame.display.set_mode(size)
     running = True
     all_sprites = pygame.sprite.Group()
@@ -799,7 +819,7 @@ if __name__ == '__main__':
     sprite.rect = sprite.image.get_rect()
     screen2 = pygame.Surface(screen.get_size())
     v = 2000  # пикселей в секунду
-    y1 = 300
+    y1 = 150
     x1 = -600
     while running:
         for event in pygame.event.get():
@@ -827,7 +847,7 @@ if __name__ == '__main__':
                     if event.type == pygame.QUIT:
                         running = False
                 screen.blit(screen2, (0, 0))
-                if x1 < 150:
+                if x1 < 75:
                     x1 += v / FPS
                 sprite.rect.x = x1
                 sprite.rect.y = y1
@@ -839,8 +859,8 @@ if __name__ == '__main__':
         elif count_enemy_voin + count_enemy_spearmen + count_enemy_cavalry == 0:
             pass
         all_sprites.draw(screen)
-        font = pygame.font.Font(None, 30)
-        panel_surface = pygame.Surface((600, 100))
+        font = pygame.font.Font(None, 15)
+        panel_surface = pygame.Surface((500, 100))
         panel_surface.fill((50, 50, 50))
         gold_text = font.render(f"Золото: {gold}", True, TEXT_COLOR)
         food_text = font.render(f"Еда: {food}", True, TEXT_COLOR)
@@ -851,14 +871,14 @@ if __name__ == '__main__':
         warriors_enemy_spearmen_text = font.render(f"Вражеские Копейщики: {count_enemy_spearmen}", True, TEXT_COLOR)
         warriors_enemy_cavalry_text = font.render(f"Вражеская Кавалерия: {count_enemy_cavalry}", True, TEXT_COLOR)
         sec_text = font.render(f"Секунд прошло: { sec}", True, TEXT_COLOR)
-        panel_surface.blit(warriors_voin_text, (10, 20))
-        panel_surface.blit(warriors_spearman_text, (10, 40))
-        panel_surface.blit(warriors_cavalry_text, (10, 60))
-        panel_surface.blit(warriors_enemy_voin_text, (250, 20))
-        panel_surface.blit(warriors_enemy_spearmen_text, (250, 40))
-        panel_surface.blit(warriors_enemy_cavalry_text, (250, 60))
-        panel_surface.blit(sec_text, (150, 80))
-        screen.blit(panel_surface, (150, 900))
+        panel_surface.blit(warriors_voin_text, (5, 10))
+        panel_surface.blit(warriors_spearman_text, (5, 20))
+        panel_surface.blit(warriors_cavalry_text, (5, 30))
+        panel_surface.blit(warriors_enemy_voin_text, (150, 10))
+        panel_surface.blit(warriors_enemy_spearmen_text, (150, 20))
+        panel_surface.blit(warriors_enemy_cavalry_text, (150, 30))
+        panel_surface.blit(sec_text, (75, 40))
+        screen.blit(panel_surface, (0, 450))
         clock.tick(FPS)
         pygame .display.flip()
         time.sleep(1)
