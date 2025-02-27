@@ -743,28 +743,29 @@ if __name__ == '__main__':
         'empty': load_image('grass.png')
     }
     voin_image = load_image('voin.png')
-    voin_image = pygame.transform.scale(voin_image, (35, 50))
+    voin_image = pygame.transform.scale(voin_image, (50, 75))
 
     cavalry_image = load_image('cavalry.png')
-    cavalry_image = pygame.transform.scale(cavalry_image, (35, 50))
+    cavalry_image = pygame.transform.scale(cavalry_image, (50, 75))
     spearman_image = load_image('spearman.png')
-    spearman_image = pygame.transform.scale(spearman_image, (35, 50))
+    spearman_image = pygame.transform.scale(spearman_image, (50, 75))
 
     enemy_voin_image = load_image('enemy_voin.png')
-    enemy_voin_image = pygame.transform.scale(enemy_voin_image, (35, 50))
+    enemy_voin_image = pygame.transform.scale(enemy_voin_image, (50, 75))
 
     enemy_cavalry_image = load_image('enemy_cavalry.png')
-    enemy_cavalry_image = pygame.transform.scale(enemy_cavalry_image, (35, 50))
+    enemy_cavalry_image = pygame.transform.scale(enemy_cavalry_image, (50, 75))
     enemy_spearman_image = load_image('enemy_spearman.png')
-    enemy_spearman_image = pygame.transform.scale(enemy_spearman_image, (35, 50))
+    enemy_spearman_image = pygame.transform.scale(enemy_spearman_image, (50, 75))
 
-    tile_width = tile_height = 50
+    tile_width = tile_height = 75
     player = None
 
     all_sprites = pygame.sprite.Group()
     tiles_group = pygame.sprite.Group()
     player_group = pygame.sprite.Group()
 
+    info = True
     count_voin = warriors_voin
     count_spearman = warriors_spearman
     count_cavalry = warriors_cavalry
@@ -787,7 +788,7 @@ if __name__ == '__main__':
     pygame.init()
     pygame.display.set_caption('Битва')
     pygame.mouse.set_visible(False)
-    size = width, height = 450, 500
+    size = width, height = 675, 750
     screen = pygame.display.set_mode(size)
     running = True
     all_sprites = pygame.sprite.Group()
@@ -819,7 +820,7 @@ if __name__ == '__main__':
     sprite.rect = sprite.image.get_rect()
     screen2 = pygame.Surface(screen.get_size())
     v = 2000  # пикселей в секунду
-    y1 = 150
+    y1 = 275
     x1 = -600
     while running:
         for event in pygame.event.get():
@@ -842,12 +843,13 @@ if __name__ == '__main__':
             if event.type == pygame.QUIT:
                 running = False
         if count_voin + count_spearman + count_cavalry == 0:
+            info = False
             while running:
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         running = False
                 screen.blit(screen2, (0, 0))
-                if x1 < 75:
+                if x1 < 125:
                     x1 += v / FPS
                 sprite.rect.x = x1
                 sprite.rect.y = y1
@@ -859,28 +861,29 @@ if __name__ == '__main__':
         elif count_enemy_voin + count_enemy_spearmen + count_enemy_cavalry == 0:
             pass
         all_sprites.draw(screen)
-        font = pygame.font.Font(None, 15)
-        panel_surface = pygame.Surface((500, 100))
-        panel_surface.fill((50, 50, 50))
-        gold_text = font.render(f"Золото: {gold}", True, TEXT_COLOR)
-        food_text = font.render(f"Еда: {food}", True, TEXT_COLOR)
-        warriors_voin_text = font.render(f"Ваши Войны: {count_voin}", True, TEXT_COLOR)
-        warriors_spearman_text = font.render(f"Ваши Копейщики: {count_spearman}", True, TEXT_COLOR)
-        warriors_cavalry_text = font.render(f"Ваша Кавалерия: {count_cavalry}", True, TEXT_COLOR)
-        warriors_enemy_voin_text = font.render(f"Вражеские Войны: {count_enemy_voin}", True, TEXT_COLOR)
-        warriors_enemy_spearmen_text = font.render(f"Вражеские Копейщики: {count_enemy_spearmen}", True, TEXT_COLOR)
-        warriors_enemy_cavalry_text = font.render(f"Вражеская Кавалерия: {count_enemy_cavalry}", True, TEXT_COLOR)
-        sec_text = font.render(f"Секунд прошло: { sec}", True, TEXT_COLOR)
-        panel_surface.blit(warriors_voin_text, (5, 10))
-        panel_surface.blit(warriors_spearman_text, (5, 20))
-        panel_surface.blit(warriors_cavalry_text, (5, 30))
-        panel_surface.blit(warriors_enemy_voin_text, (150, 10))
-        panel_surface.blit(warriors_enemy_spearmen_text, (150, 20))
-        panel_surface.blit(warriors_enemy_cavalry_text, (150, 30))
-        panel_surface.blit(sec_text, (75, 40))
-        screen.blit(panel_surface, (0, 450))
+        if info:
+            font = pygame.font.Font(None, 25)
+            panel_surface = pygame.Surface((750, 100))
+            panel_surface.fill((50, 50, 50))
+            gold_text = font.render(f"Золото: {gold}", True, TEXT_COLOR)
+            food_text = font.render(f"Еда: {food}", True, TEXT_COLOR)
+            warriors_voin_text = font.render(f"Ваши Войны: {count_voin}", True, TEXT_COLOR)
+            warriors_spearman_text = font.render(f"Ваши Копейщики: {count_spearman}", True, TEXT_COLOR)
+            warriors_cavalry_text = font.render(f"Ваша Кавалерия: {count_cavalry}", True, TEXT_COLOR)
+            warriors_enemy_voin_text = font.render(f"Вражеские Войны: {count_enemy_voin}", True, TEXT_COLOR)
+            warriors_enemy_spearmen_text = font.render(f"Вражеские Копейщики: {count_enemy_spearmen}", True, TEXT_COLOR)
+            warriors_enemy_cavalry_text = font.render(f"Вражеская Кавалерия: {count_enemy_cavalry}", True, TEXT_COLOR)
+            sec_text = font.render(f"Секунд прошло: { sec}", True, TEXT_COLOR)
+            panel_surface.blit(warriors_voin_text, (7, 15))
+            panel_surface.blit(warriors_spearman_text, (7, 30))
+            panel_surface.blit(warriors_cavalry_text, (7, 45))
+            panel_surface.blit(warriors_enemy_voin_text, (250, 15))
+            panel_surface.blit(warriors_enemy_spearmen_text, (250, 30))
+            panel_surface.blit(warriors_enemy_cavalry_text, (250, 45))
+            panel_surface.blit(sec_text, (490, 30))
+            screen.blit(panel_surface, (0, 675))
         clock.tick(FPS)
-        pygame .display.flip()
+        pygame.display.flip()
         time.sleep(1)
         sec += 1
     terminate()
