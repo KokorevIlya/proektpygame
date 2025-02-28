@@ -288,7 +288,7 @@ def terminate():
 
 # Загрузка экрана перед боем
 def start_screen():
-    intro_text = ["Правила Боя!!:", "",
+    intro_text = ["Правила Боя:",
                   "Нажмите 1 чтобы выбрать Воина!",
                   "Нажмите 2 чтобы выбрать Копейщика!",
                   "Нажмите 3 чтобы выбрать Кавалерию!",
@@ -297,18 +297,17 @@ def start_screen():
                   "Кавалерия бьют больнее воинов",
                   "Нажмите Пробел чтобы продолжить", ]
 
-    fon = pygame.transform.scale(load_image(f'fon{randint(0, 2)}.jpg'), (width, height))
+    fon = pygame.transform.scale(load_image(f'fon{randint(0, 1)}.jpg'), (width, height))
     screen.blit(fon, (0, 0))
-    font = pygame.font.Font(None, 30)
-    text_coord = 50
+    font = pygame.font.Font(None, 36)
+
+    text_coord = height // 4
+
     for line in intro_text:
-        string_rendered = font.render(line, 1, pygame.Color('black'))
-        intro_rect = string_rendered.get_rect()
-        text_coord += 10
-        intro_rect.top = text_coord
-        intro_rect.x = 10
-        text_coord += intro_rect.height
+        string_rendered = font.render(line, True, pygame.Color('white'))
+        intro_rect = string_rendered.get_rect(center=(width // 2, text_coord))
         screen.blit(string_rendered, intro_rect)
+        text_coord += intro_rect.height + 10
 
     while True:
         for event in pygame.event.get():
@@ -316,9 +315,11 @@ def start_screen():
                 terminate()
             elif event.type == pygame.KEYDOWN:
                 if pygame.K_SPACE == event.key:
-                    return  # начинаем игру
+                    return
         pygame.display.flip()
         clock.tick(FPS)
+
+
 
 
 # Генерация уровня
@@ -743,20 +744,21 @@ if __name__ == '__main__':
         'empty': load_image('grass.png')
     }
     voin_image = load_image('voin.png')
-    voin_image = pygame.transform.scale(voin_image, (50, 75))
+    voin_image = pygame.transform.smoothscale(voin_image, (70, 75))
 
     cavalry_image = load_image('cavalry.png')
-    cavalry_image = pygame.transform.scale(cavalry_image, (50, 75))
+    cavalry_image = pygame.transform.smoothscale(cavalry_image, (70, 75))
+
     spearman_image = load_image('spearman.png')
-    spearman_image = pygame.transform.scale(spearman_image, (50, 75))
+    spearman_image = pygame.transform.smoothscale(spearman_image, (70, 75))
 
     enemy_voin_image = load_image('enemy_voin.png')
-    enemy_voin_image = pygame.transform.scale(enemy_voin_image, (50, 75))
+    enemy_voin_image = pygame.transform.smoothscale(enemy_voin_image, (70, 75))
 
     enemy_cavalry_image = load_image('enemy_cavalry.png')
-    enemy_cavalry_image = pygame.transform.scale(enemy_cavalry_image, (50, 75))
+    enemy_cavalry_image = pygame.transform.smoothscale(enemy_cavalry_image, (70, 75))
     enemy_spearman_image = load_image('enemy_spearman.png')
-    enemy_spearman_image = pygame.transform.scale(enemy_spearman_image, (50, 75))
+    enemy_spearman_image = pygame.transform.smoothscale(enemy_spearman_image, (70, 75))
 
     tile_width = tile_height = 75
     player = None
@@ -824,7 +826,7 @@ if __name__ == '__main__':
     sprite_win.rect = sprite.image.get_rect()
     screen2 = pygame.Surface(screen.get_size())
     v = 2000  # пикселей в секунду
-    y1 = 275
+    y1 = 225
     x1 = -600
     while running:
         for event in pygame.event.get():
@@ -853,7 +855,7 @@ if __name__ == '__main__':
                     if event.type == pygame.QUIT:
                         running = False
                 screen.blit(screen2, (0, 0))
-                if x1 < 125:
+                if x1 < 100:
                     x1 += v / FPS
                 sprite.rect.x = x1
                 sprite.rect.y = y1
@@ -869,10 +871,10 @@ if __name__ == '__main__':
                     if event.type == pygame.QUIT:
                         running = False
                 screen.blit(screen2, (0, 0))
-                if x1 < 125:
+                if x1 < 100:
                     x1 += v / FPS
                 sprite_win.rect.x = x1
-                sprite_win.rect.y = 50
+                sprite_win.rect.y = 100
                 all_sprites.add(sprite_win)
                 all_sprites.draw(screen)
                 font = pygame.font.Font(None, 45)
