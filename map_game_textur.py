@@ -765,6 +765,7 @@ if __name__ == '__main__':
     tiles_group = pygame.sprite.Group()
     player_group = pygame.sprite.Group()
 
+    win = False
     info = True
     count_voin = warriors_voin
     count_spearman = warriors_spearman
@@ -818,6 +819,9 @@ if __name__ == '__main__':
     sprite = pygame.sprite.Sprite()
     sprite.image = load_image("gameover.png")
     sprite.rect = sprite.image.get_rect()
+    sprite_win = pygame.sprite.Sprite()
+    sprite_win.image = load_image("Win.jpg")
+    sprite_win.rect = sprite.image.get_rect()
     screen2 = pygame.Surface(screen.get_size())
     v = 2000  # пикселей в секунду
     y1 = 275
@@ -859,7 +863,27 @@ if __name__ == '__main__':
                 pygame.display.flip()
             reset_database()
         elif count_enemy_voin + count_enemy_spearmen + count_enemy_cavalry == 0:
-            pass
+            info = False
+            while running:
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        running = False
+                screen.blit(screen2, (0, 0))
+                if x1 < 125:
+                    x1 += v / FPS
+                sprite_win.rect.x = x1
+                sprite_win.rect.y = 50
+                all_sprites.add(sprite_win)
+                all_sprites.draw(screen)
+                font = pygame.font.Font(None, 45)
+                win_surface = pygame.Surface((750, 100))
+                win_surface.fill((50, 50, 50))
+                sec_text = font.render(f"Секунд потрачено: {sec}", True, TEXT_COLOR)
+                win_surface.blit(sec_text, (100 , 30))
+                screen.blit(win_surface, (0, 675))
+                clock.tick(FPS)
+                pygame.display.flip()
+            # reset_database()
         all_sprites.draw(screen)
         if info:
             font = pygame.font.Font(None, 25)
