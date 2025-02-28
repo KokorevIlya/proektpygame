@@ -883,7 +883,7 @@ if __name__ == '__main__':
                 screen.blit(win_surface, (0, 675))
                 clock.tick(FPS)
                 pygame.display.flip()
-            # reset_database()
+            reset_database()
         all_sprites.draw(screen)
         if info:
             font = pygame.font.Font(None, 25)
